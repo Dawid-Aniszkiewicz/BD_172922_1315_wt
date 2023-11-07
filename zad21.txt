@@ -1,0 +1,7 @@
+ delete from postac where rodzaj="wiking" and nazwa not in("Bjorn")order by wiek limit 2;
+
+
+alter table przetwory drop foreign key przetwory_ibfk_1,drop foreign key przetwory_ibfk_2;
+ alter table walizka drop foreign key walizka_ibfk_1;
+ alter table postac modify id_postaci int not null;
+ alter table postac drop primary key;

@@ -1,0 +1,5 @@
+ insert into postac (id_postaci,nazwa,rodzaj,pesel) values (5734,"Loko","wonsz",6312);
+
+ create table marynarz as select * from postac where statek = not null;
+
+ alter table marynarz add primary key(pesel);
