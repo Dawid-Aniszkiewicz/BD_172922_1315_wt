@@ -1,0 +1,5 @@
+ select rodzaj, sum(waga) from zasob group by rodzaj;
+
+ select nazwa, avg(waga)from zasob group by nazwa having sum(ilosc)>=4 and sum(waga*ilosc)> 10;
+
+ select distinct nazwa from zasob group by nazwa having sum(ilosc)>1;
