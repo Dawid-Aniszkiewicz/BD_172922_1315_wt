@@ -1,0 +1,84 @@
+1.1
+create table postac (
+  `id_postaci` int PRIMARY KEY auto_increment,
+  `nazwa` varchar(40),
+  `rodzaj` enum('wiking', 'ptak', 'kobieta'),
+  `data_ur` date,
+  `wiek` int unsigned
+);
+insert into postac(nazwa) values ('Bjorn');
+insert into postac(nazwa) values ('kot');
+insert into postac(nazwa) values ('Drozd');
+insert into postac(nazwa) values ('Tesciowa');
+insert into postac(nazwa) values ('Dziadek');
+update postac set wiek = 88 where nazwa = 'Tesciowa';
+
+1.2
+
+alter database `aniszkiewiczd` default character set utf8 collate utf8_unicode_ci
+create table walizka (
+`id_walizki` int primary key auto_increment not null, 
+`pojemnosc` int unsigned,
+`kolor` enum('różowy','czerwony','tęczowy','żółty'),
+`id_wlasciciela` int foreign key(id_wlasciciela) ,
+references postac(id_postaci) on delete cascade);
+
+alter table walizka alter kolor set default = 'rozowy';
+
+insert into walizka (id_wlasciciela) values ('1');
+insert into walizka (id_wlasciciela) values ('3');
+
+1.3
+
+create table izba(
+`adres_budynku` varchar(30),
+`nazwa_izby` varchar(15),
+`metraz` int unsigned,
+`wlasciciel` varchar(25),
+foreign key(wlasciciel) references postac(nazwa) on delete set null);
+
+alter table izba add column `kolor` varchar(20) default 'czarny' after metraz;
+insert into izba (adres_budynku, nazwa_izby) values ('adresspizarni','spizarnia');
+
+1.4
+
+create table przetwory(
+`id_przetworu` int primary key,
+`rok_produkcji` date default '1654-01-01',
+`id_wykonawcy` int,
+`zawartosc` varchar(30),
+`dodatek` varchar(30) default "papryczka chilli",
+`id_konsumenta` int,
+foreign key(id_wykonawcy) references postac(id_postaci),
+foreign key(id_konsumenta) references postac(id_postaci)
+);
+insert into przetwory (id_przetworu,zawartosc) values (1,'bigos');
+
+1.5
+
+create table statek(
+    -> `nazwa statku` varchar(50) primary key,
+    -> `rodzaj statku` enum("statek1","statek2"),
+    -> `data_wodowania` date,
+    -> `max_ladownosc` int unsigned);
+
+insert into statek(nazwa_statku,data_wodowania,max_ladownosc) values ("titanic","1669-03-13","2500");
+insert into statek(nazwa_statku,data_wodowania,max_ladownosc) values ("knara","1652-01-19","1600");
+
+
+alter table postac add column `funkcja`varchar(50);
+update postac set funkcja ="kapitan" where nazwa="Bjorn";
+alter table postac
+    -> add `statek` int foreign key references(nazwa_statku);
+ update postac set statek ="titanic" where nazwa="Bjorn";
+ update postac set statek ="titanic" where nazwa="Drozd";
+ update postac set statek ="knara" where nazwa="Tesciowa";
+ update postac set statek ="titanic" where nazwa="Dziadek";
+ update postac set statek ="knara" where nazwa="Brutal";
+ update postac set statek ="knara" where nazwa="Khorad";
+ update postac set statek ="knara" where nazwa="Birgun";
+ update postac set statek ="titanic" where nazwa="Defgard";
+ update postac set statek ="titanic" where nazwa="Astrid";
+
+ delete from izba where nazwa_izby = "spizarnia";
+drop table izba;

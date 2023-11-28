@@ -1,0 +1,53 @@
+2.1
+
+ delete from postac where rodzaj="wiking" and nazwa not in("Bjorn")order by wiek limit 2;
+
+
+alter table przetwory drop foreign key przetwory_ibfk_1,drop foreign key przetwory_ibfk_2;
+ alter table walizka drop foreign key walizka_ibfk_1;
+ alter table postac modify id_postaci int not null;
+ alter table postac drop primary key;
+
+2.2
+
+ alter table postac add column `pesel` varchar(11) not null;
+alter table postac add primary key(pesel);
+
+alter table postac modify column `rodzaj`varchar(20);
+ 
+insert into postac (id_postaci,nazwa,rodzaj,pesel) values (213,"Gertruda Nieszczera","Syrena",2131);
+
+2.3
+
+update postac set statek = "titanic" where nazwa like '%a%';
+
+update statek set max_ladownosc = (max_ladownosc * 0.7) where year(datawodowania) between 1900 and 2000;  
+
+select if(2022-year(data_ur)>1000,"postac ma ponad 1000 lat", "postac nie ma 1000 lat")from postac;
+
+2.4
+
+insert into postac (id_postaci,nazwa,rodzaj,pesel) values (5734,"Loko","wonsz",6312);
+
+create table marynarz as select * from postac where statek = not null;
+
+alter table marynarz add primary key(pesel);
+
+2.5
+
+update postac set statek= NULL ;
+
+delete from postac where nazwa="W60";
+
+truncate table statek;
+
+drop table statek;
+
+ create table zwierz(
+    -> `id` int PRIMARY KEY auto_increment ,
+    -> `nazwa` varchar(30),
+    -> `wiek` int);
+
+insert into zwierz (nazwa,wiek) values ("Drozd",15);
+insert into zwierz (nazwa,wiek) values ("Gertruda Nieszczera",34);
+insert into zwierz (nazwa,wiek) values ("Loko",45);

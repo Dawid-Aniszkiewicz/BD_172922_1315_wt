@@ -1,0 +1,58 @@
+4.1
+
+select avg(waga) from kreatura where rodzaj='wiking';
+
+select rodzaj,avg(waga) from kreatura group by rodzaj;
+
+select rodzaj ,avg(2020- year(dataUr)) from kreatura group by rodzaj;
+
+4.2
+
+select rodzaj, sum(waga) from zasob group by rodzaj;
+
+select nazwa, avg(waga)from zasob group by nazwa having sum(ilosc)>=4 and sum(waga*ilosc)> 10;
+
+select distinct nazwa from zasob group by nazwa having sum(ilosc)>1;
+
+4.3
+
+select kreatura.nazwa ,sum( ekwipunek.ilosc) from kreatura join ekwipunek on kreatura.idKreatury = ekwipunek.idKreatury group by kreatura.nazwa ;
+
+select kreatura.nazwa, zasob.nazwa from kreatura join ekwipunek on kreatura.idKreatury = ekwipunek.idKreatury
+join zasob on ekwipunek.idZasobu = zasob.idZasobu order by kreatura.nazwa;
+
+select kreatura.nazwa from kreatura left join ekwipunek on kreatura.idKreatury = ekwipunek.idKreatury where ekwipunek.idEkwipunku is null group by kreatura.nazwa;
+
+4.4
+
+select kreatura.nazwa ,kreatura.dataUr ,zasob.nazwa from kreatura natural join ekwipunek inner join zasob on ekwipunek.idZasobu = zasob.idZasobu where kreatura.rodzaj = "wiking" and kreatura.DataUr like "167%";
+
+select distinct kreatura.nazwa, kreatura.DataUr from kreatura join ekwipunek join zasob on ekwipunek.idZasobu = zasob.idZasobu where zasob.rodzaj="jedzenie" and kreatura.DataUr is not null order by kreatura.DataUr limit 5 ;
+
+select a.nazwa,b.nazwa from kreatura a inner join kreatura b on a.idKreatury = b.idKreatury - 5;
+
+4.5
+select kreatura.rodzaj,avg(ekwipunek.ilosc*zasob.waga*zasob.waga)as "srednia waga towarow" from kreatura join ekwipunek on kreatura.idKreatury = ekwipunek.idKreatury join zasob on zasob.Idzasobu = ekwipunek.idZasobu where kreatura.rodzaj!="malpa" and kreatura.rodzaj!="waz" and ekwipunek.ilosc<30 group by kreatura.rodzaj;
+
+select
+  kreatura.DataUr as data_starego,
+  kreatura.nazwa as stary,
+  kreatura.rodzaj,
+  k1.DataUr as data_mlodego,
+  k1.nazwa as mlody,
+  k1.rodzaj
+from
+  (
+    select
+      rodzaj,
+      min(DataUr) as stary,
+      max(DataUr) as mlody
+    from
+      kreatura
+    group by
+      rodzaj
+  ) daty
+  join kreatura on kreatura.DataUr = daty.stary
+  and daty.rodzaj = kreatura.rodzaj
+  join kreatura k1 on k1.dataUr = daty.mlody
+  and daty.rodzaj = k1.rodzaj;
