@@ -1,7 +1,0 @@
-select * from kreatura where rodzaj!="wiedzma" and udzwig>50;
-
-select * from zasob where waga between 2 and 5;
-
-select * from kreatura where nazwa like '%or%' and udzwig between 30 and 70;
-
-
