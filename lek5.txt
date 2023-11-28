@@ -1,0 +1,48 @@
+5.1
+
+create table sektor as select * from wikingowie.sektor;
+
+mysql> create table kreatura1 as select * from wikingowie.kreatura;
+
+mysql> create table uczestnicy as select * from wikingowie.uczestnicy;
+
+mysql> create table etapy_wyprawy as select * from wikingowie.etapy_wyprawy;
+
+mysql> create table wyprawa as select * from wikingowie.wyprawa;
+
+ select  kreatura1.nazwa from kreatura1 left join uczestnicy on kreatura1.idKreatury = uczestnicy.id_uczestnika where uczestnicy.id_wyprawy is NULL;
+
+select nazwa, sum(ilosc) from wyprawa left join uczestnicy on wyprawa.id_wyprawy=uczestnicy.id_wyprawy inner join ekwipunek on ekwipunek.idKreatury=uczestnicy.id_uczestnika group by nazwa;
+
+5.2
+
+select wyprawa.nazwa, count(uczestnicy.id_uczestnika), group_concat(kreatura.nazwa) from wyprawa inner join uczestnicy on wyprawa.id_wyprawy=uczestnicy.id_wyprawy inner join kreatura on uczestnicy.id_uczestnika=kreatura.idKreatury group by wyprawa.nazwa;
+
+ select idEtapu, sektor.nazwa as nazwasektoru, wyprawa.nazwa as nazwawyprawy, kreatura.nazwa kierownik, wyprawa.data_rozpoczecia from etapy_wyprawy inner join wyprawa on etapy_wyprawy.idWyprawy=wyprawa.id_wyprawy inner join kreatura on wyprawa.kierownik=kreatura.idKreatury inner join sektor on etapy_wyprawy.sektor=sektor.id_sektora order by wyprawa.data_rozpoczecia, etapy_wyprawy.kolejnosc;
+
+5.3
+
+select sektor.nazwa, count(idEtapu) from sektor left join etapy_wyprawy on etapy_wyprawy.sektor=sektor.id_sektora group by sektor.nazwa;
+
+select nazwa, if(count(uczestnicy.id_wyprawy)=0, "nie bral udzialu w wyprawie", "bral udzial w wyprawie") from kreatura left join uczestnicy on kreatura.idKreatury=uczestnicy.id_uczestnika group by nazwa;
+
+5.4
+
+select   sum(length(etapy_wyprawy.dziennik)) as ilosc_znakow,   wyprawa.nazwa from   etapy_wyprawy   join wyprawa on etapy_wyprawy.idWyprawy = wyprawa.id_wyprawy group by  wyprawa.nazwa having   ilosc_znakow < 400;
+
+select
+  wyprawa.nazwa,
+  count(uczestnicy.id_uczestnika) as iloscuczestnikow,
+  sum(zasob.waga * zasob.ilosc) / count(uczestnicy.id_uczestnika) as srednia_waga
+from
+  zasob
+  join ekwipunek on zasob.idZasobu = ekwipunek.idZasobu
+  join kreatura on ekwipunek.idKreatury = kreatura.idKreatury
+  join uczestnicy on uczestnicy.id_uczestnika = kreatura.idKreatury
+  join wyprawa on wyprawa.idwyprawy = uczestnicy.idwyprawy
+group by
+  wyprawa.nazwa;
+
+5.5
+
+select kreatura.nazwa, datediff(wyprawa.data_rozpoczecia, kreatura.dataUr) as 'dni' from kreatura inner join uczestnicy on kreatura.idKreatury=uczestnicy.id_uczestnika inner join wyprawa on uczestnicy.id_wyprawy=wyprawa.id_wyprawy inner join etapy_wyprawy on wyprawa.id_wyprawy=etapy_wyprawy.idWyprawy inner join sektor on etapy_wyprawy.sektor=sektor.id_sektora where sektor.nazwa="chatka dziadka"
