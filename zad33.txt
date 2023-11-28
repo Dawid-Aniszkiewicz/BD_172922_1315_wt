@@ -1,5 +1,0 @@
-select * from zasob where month(dataPozyskania) in(07,08);
-
-select * from zasob where rodzaj is not null order by waga;
-
-select nazwa,dataUr from kreatura where dataUr is not null order by year(dataUr) limit 5;
