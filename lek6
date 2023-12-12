@@ -1,0 +1,10 @@
+ delimiter //
+ create trigger insert_k
+     before insert on kreatura
+    for each row
+     begin
+     if new.waga <=0 then
+     signal sqlstate '45000' set MESSAGE_TEXT = 'Waga musi byc wieksza od 0';
+     end if;
+     end;
+     //
