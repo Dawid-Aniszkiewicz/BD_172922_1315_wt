@@ -8,3 +8,51 @@
      end if;
      end;
      //
+dokonczyc
+
+create trigger usun_idk
+after
+  delete on kreatura for each row begin
+insert into
+  archiwum_wypraw(
+    id_wyprawy,
+    nazwa,
+    data_rozpoczecia,
+    data_zakonczenia,
+    kierownik
+  )
+values
+  (
+    OLD.idwyprawy,
+    (
+      select
+        nazwa
+      from
+        wyprawa
+      where
+        idwyprawy = OLD.idwyprawy
+    ),
+    (
+      select
+        data_rozpoczecia
+      from
+        wyprawa
+      where
+        data_rozpoczecia = OLD.data_rozpoczecia
+    ),
+    (
+      select
+        data_zakonczenia
+      from
+        wyprawa
+      where
+        data_zakonczenia = OLD.data_zakonczenia
+    ),
+    (
+      select
+        nazwa
+      from
+        kreatura
+      where
+        idKreatury = OLD.idKreatury
+    ));
