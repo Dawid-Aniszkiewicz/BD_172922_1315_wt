@@ -39,7 +39,7 @@ from
   join ekwipunek on zasob.idZasobu = ekwipunek.idZasobu
   join kreatura on ekwipunek.idKreatury = kreatura.idKreatury
   join uczestnicy on uczestnicy.id_uczestnika = kreatura.idKreatury
-  join wyprawa on wyprawa.idwyprawy = uczestnicy.idwyprawy
+  join wyprawa on wyprawa.id_wyprawy = uczestnicy.id_wyprawy
 group by
   wyprawa.nazwa;
 
