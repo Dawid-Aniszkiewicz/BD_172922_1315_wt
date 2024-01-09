@@ -1,4 +1,5 @@
- delimiter //
+ZAD1
+delimiter //
  create trigger insert_k
      before insert on kreatura
     for each row
@@ -8,51 +9,89 @@
      end if;
      end;
      //
-dokonczyc
 
-create trigger usun_idk
-after
-  delete on kreatura for each row begin
-insert into
-  archiwum_wypraw(
-    id_wyprawy,
-    nazwa,
-    data_rozpoczecia,
-    data_zakonczenia,
-    kierownik
-  )
-values
-  (
-    OLD.idwyprawy,
-    (
-      select
-        nazwa
-      from
-        wyprawa
-      where
-        idwyprawy = OLD.idwyprawy
-    ),
-    (
-      select
-        data_rozpoczecia
-      from
-        wyprawa
-      where
-        data_rozpoczecia = OLD.data_rozpoczecia
-    ),
-    (
-      select
-        data_zakonczenia
-      from
-        wyprawa
-      where
-        data_zakonczenia = OLD.data_zakonczenia
-    ),
-    (
-      select
-        nazwa
-      from
-        kreatura
-      where
-        idKreatury = OLD.idKreatury
-    ));
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+ZAD2
+
+CREATE TABLE archiwum_wypraw (
+    id_wyprawy INT PRIMARY KEY AUTO_INCREMENT,
+    nazwa VARCHAR(255) NOT NULL,
+    data_rozpoczecia DATE NOT NULL,
+    data_zakonczenia DATE,
+    kierownik VARCHAR(255) NOT NULL
+);
+----------------------------------------------------------
+DELIMITER //
+CREATE TRIGGER usun_wyprawa
+BEFORE DELETE ON wyprawa
+FOR EACH ROW
+BEGIN
+    INSERT INTO archiwum_wypraw (nazwa, data_rozpoczecia, data_zakonczenia, kierownik)
+    SELECT nazwa, data_rozpoczecia, data_zakonczenia, kreatura.nazwa
+    FROM wyprawa
+    JOIN kreatura ON wyprawa.id_kreatury = kreatura.id_kreatury
+    WHERE wyprawa.id_wyprawy = OLD.id_wyprawy;
+END;
+//
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+ZAD3
+DELIMITER //
+
+CREATE PROCEDURE eliksir_sily(IN kreatura_id INT)
+BEGIN
+    DECLARE udzwig_wart DECIMAL(10,2);
+
+    -- Pobranie aktualnej wartości pola udzwig
+    SELECT udzwig INTO udzwig_wart FROM kreatura WHERE id_kreatury = kreatura_id;
+
+    -- Jeśli rekord istnieje, zaktualizuj wartość pola udzwig
+    IF udzwig_wart IS NOT NULL THEN
+        UPDATE kreatura SET udzwig = udzwig_wart * 1.2 WHERE id_kreatury = kreatura_id;
+        SELECT CONCAT('Eliksir siły podniesiony dla kreatury o id_kreatury: ', kreatura_id) AS wynik;
+    ELSE
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'brak kretury o podanym id_kreatury';
+    END IF;
+END;
+//
+------------------------------------------------------------------------------
+CREATE FUNCTION wielkie_litery(maly_tekst VARCHAR(255))
+RETURNS VARCHAR(255)
+BEGIN
+    DECLARE duzy_tekst VARCHAR(255);
+
+    SET duzy_tekst = UPPER(maly_tekst);
+
+    RETURN duzy_tekst;
+END;
+
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+ZAD4
+
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+ZAD5
+A
+DELIMITER //
+
+CREATE PROCEDURE statystyki_udzwigu_kreatur(
+    OUT srednia_udzwigu DECIMAL(10,2),
+    OUT suma_udzwigu DECIMAL(10,2),
+    OUT maks_udzwigu DECIMAL(10,2)
+)
+BEGIN
+    -- Oblicz średnią udźwigu
+    SELECT AVG(udzwig) INTO srednia_udzwig FROM kreatura;
+
+    -- Oblicz sumę udźwigu
+    SELECT SUM(udzwig) INTO suma_udzwig FROM kreatura;
+
+    -- Znajdź maksymalny udźwig
+    SELECT MAX(udzwig) INTO maks_udzwig FROM kreatura;
+END;
+
+//
+
+
+
+
+
