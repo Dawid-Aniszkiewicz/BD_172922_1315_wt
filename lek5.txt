@@ -32,14 +32,14 @@ select   sum(length(etapy_wyprawy.dziennik)) as ilosc_znakow,   wyprawa.nazwa fr
 
 select
   wyprawa.nazwa,
-  count(uczestnicy.id_uczestnika) as iloscuczestnikow,
-  sum(zasob.waga * zasob.ilosc) / count(uczestnicy.id_uczestnika) as srednia_waga
+  count(distinct uczestnicy.id_uczestnika) as iloscuczestnikow,
+  (sum(zasob.waga * ekwipunek.ilosc) / count(distinct uczestnicy.id_uczestnika)) as srednia_waga
 from
-  zasob
-  join ekwipunek on zasob.idZasobu = ekwipunek.idZasobu
-  join kreatura on ekwipunek.idKreatury = kreatura.idKreatury
-  join uczestnicy on uczestnicy.id_uczestnika = kreatura.idKreatury
-  join wyprawa on wyprawa.id_wyprawy = uczestnicy.id_wyprawy
+ wyprawa
+  inner join uczestnicy on wyprawa.id_wyprawy = uczestnicy.id_wyprawy
+left join kreatura on uczestnicy.id_uczestnika = kreatura.idKreatury
+  left join ekwipunek on ekwipunek.idKreatury = kreatura.idKreatury
+  left join zasob on zasob.idZasobu = ekwipunek.idZasobu
 group by
   wyprawa.nazwa;
 
