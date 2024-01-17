@@ -1,0 +1,63 @@
+#zad1
+CREATE TABLE pracownik(
+id INT AUTO_INCREMENT,
+imie VARCHAR(50) NOT NULL,
+nazwisko VARCHAR(100) NOT NULL,
+data_urodzenia DATE,
+stanowisko ENUM('sprzedawca', 'magazynier', 'ksiegowa'),
+PRIMARY KEY(id)
+);
+
+#zad2
+INSERT INTO pracownik VALUES (1, 'John', 'Smith', '2010-01-01', 'ksiegowa');
+INSERT INTO pracownik VALUES (2, 'Bolek', 'Lolek', '1998-02-02', 'magazynier');
+INSERT INTO pracownik VALUES (3, 'Franek', 'Kimono', '2010-06-06', 'sprzedawca');
+
+#zad3
+CREATE TABLE dzial(
+id INT AUTO_INCREMENT,
+nazwa VARCHAR(255),
+PRIMARY KEY(id)
+);
+
+#zad4
+INSERT INTO dzial (nazwa) VALUES ('sprzedaz'), ('magazyn'), ('ksiegowosc');
+
+#zad5
+ALTER TABLE pracownik MODIFY COLUMN stanowisko ENUM('sprzedawca', 'magazynier', 'ksiegowa') DEFAULT 'sprzedawca';
+
+#zad6
+ALTER TABLE pracownik ADD COLUMN pensja FLOAT(7, 2);
+
+#zad7
+ALTER TABLE dzial RENAME COLUMN nazwa TO nazwa_dzialu;
+ALTER TABLE dzial RENAME COLUMN id TO id_dzialu;
+ALTER TABLE pracownik RENAME COLUMN id TO id_pracownika;
+
+#zad8
+DELETE FROM pracownik ORDER BY id_pracownika DESC LIMIT 1;
+
+#zad9
+ALTER TABLE pracownik ADD COLUMN dzial INT NOT NULL;
+UPDATE pracownik SET dzial = 3 WHERE stanowisko = 'ksiegowa';
+UPDATE pracownik SET dzial = 2 WHERE stanowisko = 'magazynier';
+ALTER TABLE pracownik ADD FOREIGN KEY (dzial) REFERENCES dzial(id_dzialu) ON DELETE RESTRICT;
+
+DELETE FROM dzial WHERE id_dzialu = 3;
+
+#zad10
+DROP TABLE IF EXISTS stanowisko;
+CREATE TABLE stanowisko (
+id_stanowiska INT,
+nazwa_stanowiska VARCHAR(255),
+PRIMARY KEY (id_stanowiska));
+INSERT INTO stanowisko VALUES (1, 'sprzedawca'), (2, 'magazynier'), (3, 'ksiegowa');
+
+#zad11
+ALTER TABLE pracownik MODIFY COLUMN stanowisko INT NOT NULL;
+ALTER TABLE pracownik ADD FOREIGN KEY (stanowisko) REFERENCES stanowisko(id_stanowiska);
+
+#zad12
+ALTER TABLE pracownik DROP FOREIGN KEY pracownik_ibfk_1;
+ALTER TABLE pracownik MODIFY COLUMN dzial INT;
+ALTER TABLE pracownik ADD FOREIGN KEY (dzial) REFERENCES dzial(id_dzialu) ON DELETE SET NULL;
